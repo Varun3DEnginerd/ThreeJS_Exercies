@@ -2,6 +2,9 @@ console.log(' JavaScript is Walking. and will Run fast')
 
 import * as THREE from 'three'
 
+// Orbit Controls:
+import { OrbitControls } from 'three/examples/jsm/Addons.js'
+//console.log(OrbitControls)
 
 //! Cursor:
 const cursor=
@@ -15,10 +18,7 @@ window.addEventListener('mousemove',(event)=>{
     
     cursor.x = event.clientX/sizes.width - 0.5;
     cursor.y = (event.clientY/sizes.height -0.5);
-
     cursor.y = -1.0 * cursor.y;
-
-    console.log('X,Y = ',cursor.x,cursor.y);
 })
 
 //! CANVAS:
@@ -73,6 +73,14 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 camera.position.z = 3
 scene.add(camera)
 
+// Orbit Controls:
+
+const controls = new OrbitControls(camera,canvas);
+
+//!test: controls.target.y =2;
+controls.enableDamping = true;
+controls.enablePan= true;
+
 
 //! create new Renderer for drawing on our canvas:
 const renderer = new THREE.WebGLRenderer({
@@ -93,10 +101,12 @@ const tick = ()=>
     const deltaTime = currentTime - time;
     time = currentTime;
                                     //OLD: //cube2.rotation.y += 0.001 * deltaTime;
-    camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 2;
-    camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 2;
-    camera.position.y = cursor.y * 3;
-    camera.lookAt(cube2.position);
+    //!camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 2;
+    //!camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 2;
+    //!camera.position.y = cursor.y * 3;
+    //!camera.lookAt(cube2.position);
+    controls.update();
+
 
     //* display()
     renderer.render(scene, camera)

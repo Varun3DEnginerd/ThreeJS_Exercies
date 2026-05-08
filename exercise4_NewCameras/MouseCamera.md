@@ -44,6 +44,19 @@ We need values with an Amplitude of '1' and that can be both Negative and Positi
 //** BUT THREE.js has Integrated Diff New Classes to control and do similar Camera Handling
 //** They are part of BUILT-IN Controls 
 
+1. Device Orientation : NOT SUPPORTED Now.
+2. FlyControl
+3. FirstPersonControl (Not FPS)
+4. Pointer Lock Controls (FPS Game,collisions)
+5. Orbit Control. (Google Maps)
+6. Trackball Control. (No Limits)
+7. Transform Control (Blender)
+8. Drag Controls (Obj Transform with Picking)
+
+
+
+// Orbit Controls:
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.jsm'
 
 
 
