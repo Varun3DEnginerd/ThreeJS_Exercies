@@ -14,7 +14,7 @@ Transformations : DONE
 Animations 	: DONE
 CAMERA		: DONE
 Textures	: DONE
-IMPORTED MODELS : ONGOING
+IMPORTED MODELS : (gltf Done)
 
 Lights 		: PENDING
 DEBUG UI	: PENDING
