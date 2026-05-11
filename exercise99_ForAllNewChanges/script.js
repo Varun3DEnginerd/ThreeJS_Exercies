@@ -2,118 +2,119 @@ console.log(' JavaScript is Walking. and will Run fast')
 
 import * as THREE from 'three'
 
+// Orbit Controls:
+import { OrbitControls } from 'three/examples/jsm/Addons.js'
+//console.log(OrbitControls)
+
+//! Cursor:
+const cursor=
+{
+    x:0,
+    y:0
+}
+
+// Mouse Controls:
+window.addEventListener('mousemove',(event)=>{
+    
+    cursor.x = event.clientX/sizes.width - 0.5;
+    cursor.y = (event.clientY/sizes.height -0.5);
+    cursor.y = -1.0 * cursor.y;
+})
+
 //! CANVAS:
 const canvas = document.querySelector('canvas.threeJS')
-console.log(canvas)
+//console.log(canvas)
+//console.log(THREE)
 
-console.log(THREE)
 
-// Scene:
+
+
+// Creating a new scene:
 const scene = new THREE.Scene()
 
-let xAngle =1;
 
-/* Axes Helper */
-//! METHOD5: Axes Helper:
+// Create and add DEBUG Axes in our 'scene'
 const axesHelper = new THREE.AxesHelper(3);
 scene.add(axesHelper);
 
-/**
- * Objects
- */
 
-
-//! METHOD9: sceneGraph:
+// Create and add GROUP in our 'scene'
 const group_1 = new THREE.Group();
-group_1.y=1.0;
 scene.add(group_1);
 
 
-const cube1 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 })
-)
-cube1.position.x = - 1.5
-cube1.position.y = 1.0
-group_1.add(cube1);
-
-//! METHOD1: This will normalize our Translate Values:
-//cube1.position.normalize();
-
-//! METHOD2: To Set Translate X,Y,Z directly :
-cube1.position.set(/*Tx*/-1.5,/*Ty*/0.95,/*Tz*/0.0);
-
-
+// Create and add CUBE in our 'group_1' which is already added in 'scene'
 const cube2 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 )
+
+// translation:
 cube2.position.x = 0
-cube2.position.z = -1.0
-
-
-//! METHOD7: rotation:
-
-//cube2.rotation.reorder('YZX');
-cube2.rotation.x = 50.0;
-cube2.rotation.y = 20.87;
-cube2.rotation.z = 10.87;
+cube2.position.z = 0.0
+// rotation:
+cube2.rotation.x = 0.0;
+cube2.rotation.y = 0.0;
+cube2.rotation.z = 0.0;
 
 group_1.add(cube2);
 
 
-const cube3 = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: 0x0000ff })
-)
-cube3.position.x = 1.5
-cube3.position.y = -1.5
-cube3.position.z = -2.0
 
-//! METHOD6: for obj.scale.set() :Scale Matrix:
-cube3.scale.set(0.65,1.1,0.5)
-
-group_1.add(cube3);
-
-//! METHOD3:  distance betweem Center of Scene and Object
-console.log(cube3.position.length())
-
-
-
-/**
- * Sizes
- */
+// Object to save resize related variables:
 const sizes = {
     width: 800,
     height: 600
 }
 
-/**
- * Camera
- */
 
-
+// create and add "Camera Object for Perspective Projection Matrix" into our 'scene'
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 camera.position.z = 3
-//camera.position.x = 1
-//camera.position.y = 1
-
-//! METHOD8: lookAt
-camera.lookAt(new THREE.Vector3(1,0,0));
-//camera.lookAt(cube2.position);
-
-
 scene.add(camera)
 
-//! METHOD4: distance betweem Camera and Object:
-console.log(cube3.position.distanceTo(camera.position))
+// Orbit Controls:
+
+const controls = new OrbitControls(camera,canvas);
+
+//!test: controls.target.y =2;
+controls.enableDamping = true;
+controls.enablePan= true;
 
 
-/**
- * Renderer
- */
+//! create new Renderer for drawing on our canvas:
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+
+//! resize our renderer:
 renderer.setSize(sizes.width, sizes.height)
-renderer.render(scene, camera)
+
+
+//! ********* GAME LOOP ************
+let time = Date.now();
+
+const tick = ()=>
+{
+    //* update()
+    const currentTime = Date.now();
+    const deltaTime = currentTime - time;
+    time = currentTime;
+                                    //OLD: //cube2.rotation.y += 0.001 * deltaTime;
+    //!camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 2;
+    //!camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 2;
+    //!camera.position.y = cursor.y * 3;
+    //!camera.lookAt(cube2.position);
+    controls.update();
+
+
+    //* display()
+    renderer.render(scene, camera)
+
+    //* request Next Frame: like SwapBuffers(...)
+    window.requestAnimationFrame(tick);
+}
+
+tick();
+
+
