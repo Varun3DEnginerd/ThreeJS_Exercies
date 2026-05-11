@@ -13,15 +13,26 @@ Types:
 8. PBR
 
 
+
+
+a. implement CUBE + Textures   	: DONE
+b. use THREE.js Texture Loader 	: DONE
+c. UV Unwrapping 				: WIP
+d. texture Transoform			: WIP
+e. texture Filtering			: WIP
+
+
 //**** TO LOAD  A TEXTURE *****
 
 Like other features, Texture is Also a Class in THREE.js.
 
-a. implement CUBE + Textures   	: DONE
-b. use THREE.js Texture Loader 	: WIP
-c. UV Unwrapping 				: WIP
-d. texture Transoform			: WIP
-e. texture Filtering			: WIP
+Also there is class named TextureLoader() which directlyhelps us loading multiple textures instead of our own image.load().
+
+
+//*** LoadingManager Class : to handle multiple texture loading and see its progress ******
+
+
+
 
 
 
