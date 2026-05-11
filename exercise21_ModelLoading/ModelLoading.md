@@ -24,10 +24,12 @@ gltfLoader_1.load(
 
 # Other model formats to Load:
 
-1. glTF 	: DONE
-2. glb		: DONE
-3. Draco	: Error
-4. Embedded	: DONE
+1. glTF 				: DONE
+2. glb					: DONE
+3. Draco				: Error
+4. Embedded				: DONE
+5. FlightHelmet.gltf 	: DONE
+6. Animated 			: DONE
 
 
 
