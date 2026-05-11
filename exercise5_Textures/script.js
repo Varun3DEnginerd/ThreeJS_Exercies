@@ -4,6 +4,7 @@ import * as THREE from 'three'
 
 // Orbit Controls:
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
+import { color } from 'three/tsl'
 //console.log(OrbitControls)
 
 //! Cursor:
@@ -64,7 +65,10 @@ loadingManager.onError = () =>
 
 //! TEXTURE LOADER: 
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const colorTexture = textureLoader.load('/static/color.jpg')
+//const colorTexture = textureLoader.load('/static/color.jpg')
+//const colorTexture = textureLoader.load('/static/textures/checkerboard-1024x1024.png')
+// const colorTexture = textureLoader.load('/static/textures/checkerboard-8x8.png')
+const colorTexture = textureLoader.load('/static/textures/minecraft.png')
 colorTexture.colorSpace = THREE.SRGBColorSpace;
 
 const alphaTexture = textureLoader.load('/static/textures/door/alpha.jpg')
@@ -85,34 +89,40 @@ metalnessTexture.colorSpace = THREE.SRGBColorSpace;
 const roughnessTexture = textureLoader.load('/static/textures/door/roughness.jpg')
 roughnessTexture.colorSpace = THREE.SRGBColorSpace;
 
+//! TextureTransformation: (repet, wraps, offset, rotate, )
+
+//! repeat:
+//colorTexture.repeat.x =2;
+//colorTexture.repeat.y =3;
+
+//! wraps:
+//colorTexture.wrapS = THREE.RepeatWrapping;
+//colorTexture.wrapT = THREE.RepeatWrapping;
+
+//! offset:
+//colorTexture.offset.x =0.5;
+//colorTexture.offset.y =0.5;
 
 
-// const exampleTexture = textureLoader.load(
-//     '/static/color.jpg',
-//     () =>
-//     {
-//        console.log('exampleTexture Load success.') 
-//     },
-//     () =>
-//     {
-//        console.log('-- progress -- ?? ') 
-//     },
-//     () =>
-//     {
-//        console.log('error for exampleTexture.') 
-//     }
-// )
-// exampleTexture.colorSpace = THREE.SRGBColorSpace;
+//! rotate:
+//colorTexture.rotation = Math.PI /4;
+//colorTexture.center.x = 0.5;
+//colorTexture.center.y = 0.5;
+
+//! TextureFiltering:
+//* Using Nearest Filter is better for Performance and Result Both. 
+//Disable MipMaps as we dont need them with Nearest Filtering:
+colorTexture.generateMipmaps = false;
+//! minification Filter:
+colorTexture.minFilter = THREE.NearestFilter; //!SharpResults:
+//! magnification Filter:
+colorTexture.magFilter = THREE.NearestFilter; //!SharpResults:
 
 
 
 // Create and add CUBE in our 'group_1' which is already added in 'scene'
 const cube2 = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    // new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    // new THREE.MeshBasicMaterial({color: 0x00ff00,map:colorTexture})
-    // new THREE.MeshBasicMaterial({map:normalTexture})
-    // new THREE.MeshBasicMaterial({map:ambientOcclusionTexture})
     new THREE.MeshBasicMaterial({color: 0xffffff,map:colorTexture}),
 )
 
@@ -130,19 +140,6 @@ cube2.rotation.z = 0.0;
 group_1.add(cube2);
 
 
-const geometry_2 = new THREE.Mesh(
-    // new THREE.SphereGeometry(1,32,32),
-    // new THREE.ConeGeometry(1,1,32),
-    // new THREE.TorusGeometry(1,0.35,32,100),
-    // new THREE.CylinderGeometry(1,1,0.5,20,20),
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({color: 0xffffff,map:colorTexture})
-)
-// translation:
-geometry_2.position.x = 0.0;
-geometry_2.position.z = 0.0;
-
-// group_1.add(geometry_2);
 
 
 // Object to save resize related variables:

@@ -13,7 +13,7 @@ From 'exercise3\_Animations' ONWARDS you can simply RENAME the ongoing script.js
 Transformations : DONE
 Animations 	: DONE
 CAMERA		: DONE
-Textures	: ONGOING
+Textures	: DONE
 IMPORTED MODELS : ONGOING
 
 Lights 		: PENDING

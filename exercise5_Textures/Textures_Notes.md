@@ -17,9 +17,9 @@ Types:
 
 a. implement CUBE + Textures   	: DONE
 b. use THREE.js Texture Loader 	: DONE
-c. UV Unwrapping 				: WIP
-d. texture Transoform			: WIP
-e. texture Filtering			: WIP
+c. UV Unwrapping 				: DONE
+d. texture Transoform			: DONE
+e. texture Filtering			: DONE
 
 
 //**** TO LOAD  A TEXTURE *****
@@ -31,6 +31,10 @@ Also there is class named TextureLoader() which directlyhelps us loading multipl
 
 //*** LoadingManager Class : to handle multiple texture loading and see its progress ******
 
+
+
+
+//*** Texture Transformations and Filtering ******
 
 
 
