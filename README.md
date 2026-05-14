@@ -2,12 +2,13 @@
 
 This is my Three-JS Journey backup as I implement basic concepts
 
-# COMMANDS for Running THREE.js Project : 
+# COMMANDS for Running THREE.js Project :
 
 # npm run dev  ( to restart server with project)
 
 VIMP:
 From 'exercise3\_Animations' ONWARDS you can simply RENAME the ongoing script.js as BACKUP and use a Copy of it to make changes TO AVOID EXTRA PROJECT Directories.
+
 
 
 Transformations : DONE
@@ -19,19 +20,19 @@ IMPORTED MODELS : (gltf Done)
 Lights 		: PENDING
 DEBUG UI	: PENDING
 Materials	: PENDING
-SHADERS		: PENDING
+SHADERS		: basic DONE
 SHADER Patters	: PENDING
 
 
 
+React ThreeFiber: ####
+Basecode in RTF : ####
 
 
 
 
 
-
-
-/** Old Commands I used for Installing npm packages with VS code 
+/\*\* Old Commands I used for Installing npm packages with VS code
 
 npm install -y
 
@@ -46,4 +47,6 @@ npm install three
 npm run dev
 
 
-*/
+
+\*/
+
