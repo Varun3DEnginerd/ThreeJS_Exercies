@@ -1,64 +1,54 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-
-console.log(' JavaScript is Walking. and will Run fast')
-
-
+////import GUI from 'lil-gui'
 
 /**
  * Base
  */
 // Debug
+////const gui = new GUI()
 
 // Canvas
 const canvas = document.querySelector('canvas.threeJS')
-//const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
 
-//! Texutres:
-const textureLoader = new THREE.TextureLoader()
+/**
+ * Floor
+ */
+const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.MeshStandardMaterial({
+        color: '#444444',
+        metalness: 0,
+        roughness: 0.5
+    })
+)
+floor.receiveShadow = true
+floor.rotation.x = - Math.PI * 0.5
+scene.add(floor)
 
 /**
- * Shape
+ * Lights
  */
+const ambientLight = new THREE.AmbientLight(0xffffff, 2.4)
+scene.add(ambientLight)
 
-const shape_1 = new THREE.PlaneGeometry(1,1,32, 32)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.8)
+directionalLight.castShadow = true
+directionalLight.shadow.mapSize.set(1024, 1024)
+directionalLight.shadow.camera.far = 15
+directionalLight.shadow.camera.left = - 7
+directionalLight.shadow.camera.top = 7
+directionalLight.shadow.camera.right = 7
+directionalLight.shadow.camera.bottom = - 7
+directionalLight.position.set(5, 5, 5)
+scene.add(directionalLight)
 
-//! Material with Shader:
-
-const material_1 = new THREE.RawShaderMaterial({
-    vertexShader: `
-        uniform mat4 modelMatrix;
-        uniform mat4 viewMatrix;
-        uniform mat4 projectionMatrix;
-
-        attribute vec3 position;
-
-        void main()
-        {
-            gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4(position,1.0);
-        }
-    `,
-    fragmentShader: `
-        precision mediump float;
-
-        void main()
-        {
-            gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-        }
-    `
-})
-
-
-//! MESH:
-const mesh_1 = new THREE.Mesh(shape_1,material_1)
-
-scene.add(mesh_1)
-
-
-//* Sizes:
+/**
+ * Sizes
+ */
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
@@ -79,20 +69,27 @@ window.addEventListener('resize', () =>
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
-//* Camera 
+/**
+ * Camera
+ */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0.25, -0.25, 1)
+camera.position.set(2, 2, 2)
 scene.add(camera)
 
-//* Controls
+// Controls
 const controls = new OrbitControls(camera, canvas)
+controls.target.set(0, 0.75, 0)
 controls.enableDamping = true
 
-//* Renderer
+/**
+ * Renderer
+ */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+renderer.shadowMap.enabled = true
+renderer.shadowMap.type = THREE.PCFShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 

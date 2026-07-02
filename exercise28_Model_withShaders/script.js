@@ -6,6 +6,9 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js'
 
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
+// Shader loader
+const shaderLoader = new THREE.FileLoader();
+
 //! Cursor:
 const cursor=
 {
@@ -21,21 +24,61 @@ const canvas = document.querySelector('canvas.threeJS')
 // Creating a new scene:
 const scene = new THREE.Scene()
 
-//! MODEL LOADING:
+//! MODEL LOADING WITH CUSTOM SHADERS:
 
-const gltfLoader_1 = new GLTFLoader();
+let shaderMaterial;
+let modelMesh;
 
-gltfLoader_1.load(
-    //'/static/models/Duck/glTF/Duck.gltf',
-    '/static/models/Duck/glTF-Embedded/Duck.gltf',
+// Load shaders first
+Promise.all([
+    shaderLoader.loadAsync('./vertex.glsl'),
+    shaderLoader.loadAsync('./fragment.glsl')
+]).then(([vertexShader, fragmentShader]) => {
+    // Create shader material base template
+    const shaderMaterialTemplate = new THREE.ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        uniforms: {
+            uTime: { value: 0.0 },
+            uTexture: { value: null },
+            uUseTexture: { value: false }
+        },
+        side: THREE.DoubleSide
+    });
 
-    (gltf) =>
-    {
-        console.log(gltf);
-        scene.add(gltf.scene.children[0])
+    // Load model
+    const gltfLoader_1 = new GLTFLoader();
+    gltfLoader_1.load(
+        //'/static/models/Duck/glTF-Binary/Duck.glb',
+        '/static/models/cc0_-_arrow_5.glb',
+        (gltf) => {
+            console.log(gltf);
+            const model = gltf.scene.children[0];
+            
+            // Apply custom shader material to all meshes
+            model.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    const originalMap = child.material && child.material.map ? child.material.map : null;
+                    const meshMaterial = shaderMaterialTemplate.clone();
+                    if (originalMap) {
+                        meshMaterial.uniforms.uTexture.value = originalMap;
+                        meshMaterial.uniforms.uUseTexture.value = true;
+                    }
+                    child.material = meshMaterial;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            
+            model.position.x = 1.0;
+            model.position.y = 1.5;
+            model.position.z = 1.0;
 
-    },
-)
+            modelMesh = model;
+            scene.add(model);
+        }
+    );
+}).catch(error => console.error('Error loading shaders or model:', error));
 
 // Create and add DEBUG Axes in our 'scene'
 const axesHelper = new THREE.AxesHelper(3);
@@ -144,6 +187,11 @@ const tick = ()=>
     const currentTime = Date.now();
     const deltaTime = currentTime - time;
     time = currentTime;
+    
+    // Update shader uniforms
+    if (shaderMaterial) {
+        shaderMaterial.uniforms.uTime.value = Date.now() * 0.001;
+    }
                                     
     controls.update();
 
