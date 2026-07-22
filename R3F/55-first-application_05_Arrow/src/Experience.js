@@ -10,41 +10,41 @@ export default function Experience() {
         const shape1 = new THREE.BufferGeometry();
 
         const tail_Vertices = new Float32Array([
-            // top : 0,1,2,3
-            1.0, 1.0, -1.0,
-            -1.0, 1.0, -1.0,
-            -1.0, 1.0, 1.25,
-            1.0, 1.0, 1.25,
+            // top : 0,1,2,3  //color-red   
+            1.0, 1.0, -0.75,
+            -2.0, 1.0, -0.75,
+            -2.0, 1.0, 0.75,
+            1.0, 1.0, 0.75,
 
-            // bottom: 4,5,6,7
-            1.0, -1.0, -1.0,
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0, 1.25,
-            1.0, -1.0, 1.25,
+            // bottom: 4,5,6,7  //color-green 
+            1.0, -1.0, -0.75,
+            -2.0, -1.0, -0.75,
+            -2.0, -1.0, 0.75,
+            1.0, -1.0, 0.75,
 
-            // front: 8,9,10,11
-            1.0, 1.0, 1.25,
-            -1.0, 1.0, 1.25,
-            -1.0, -1.0, 1.25,
-            1.0, -1.0, 1.25,
+            // front: 8,9,10,11  //color-blue  
+            1.0, 1.0, 0.75,
+            -2.0, 1.0, 0.75,
+            -2.0, -1.0, 0.75,
+            1.0, -1.0, 0.75,
 
-            // back: 12,13,14,15
-            1.0, 1.0, -1.0,
-            -1.0, 1.0, -1.0,
-            -1.0, -1.0, -1.0,
-            1.0, -1.0, -1.0,
+            // back: 12,13,14,15  //color-cyan   
+            1.0, 1.0, -0.75,
+            -2.0, 1.0, -0.75,
+            -2.0, -1.0, -0.75,
+            1.0, -1.0, -0.75,
 
-            // right: 16,17,18,19
-            1.0, 1.0, -1.0,
-            1.0, 1.0, 1.25,
-            1.0, -1.0, 1.25,
-            1.0, -1.0, -1.0,
+            // right: 16,17,18,19  //color-magenta  
+            1.0, 1.0, -0.75,
+            1.0, 1.0, 0.75,
+            1.0, -1.0, 0.75,
+            1.0, -1.0, -0.75,
 
-            // left: 20,21,22,23
-            -1.0, 1.0, 1.25,
-            -1.0, 1.0, -1.0,
-            -1.0, -1.0, -1.0,
-            -1.0, -1.0, 1.25
+            // left: 20,21,22,23  //color-yellow   
+            -2.0, 1.0, 0.75,
+            -2.0, 1.0, -0.75,
+            -2.0, -1.0, -0.75,
+            -2.0, -1.0, 0.75,
         ]);
 
         const indices = new Uint16Array([
@@ -129,7 +129,7 @@ export default function Experience() {
         const shape2 = new THREE.BufferGeometry();
 
         const arrowHead_Vertices = new Float32Array([
-            // front
+              // front
             0.0, 1.0, 0.0,
             -1.0, -1.0, 0.75,
             1.0, -1.0, 0.75,
@@ -151,21 +151,25 @@ export default function Experience() {
         ]);
 
         const arrowHead_Colors = new Float32Array([
-             1.0,0.0,0.0,
+            // front
+            1.0,0.0,0.0,
+            1.0,.0,0.0,
+            1.0,0.0,.0,
+
+            // right
             0.0,1.0,0.0,
+            0.0,1.0,0.0,
+            0.0,1.0,0.0,
+            
+            // back
+            0.0,0.0,1.0,
+            0.0,0.0,1.0,
             0.0,0.0,1.0,
 
-            1.0,0.0,0.0,
-            0.0,0.0,1.0,
-            0.0,1.0,0.0,
-
-            1.0,0.0,0.0,
-            0.0,1.0,0.0,
-            0.0,0.0,1.0,
-
-            1.0,0.0,0.0,
-            0.0,0.0,1.0,
-            0.0,1.0,0.0,
+            // left
+            1.0,1.0,0.0,
+            1.0,1.0,0.0,
+            1.0,1.0,0.0,
         ]);
 
         shape2.setAttribute("position", new THREE.BufferAttribute(arrowHead_Vertices, 3));
@@ -183,14 +187,14 @@ export default function Experience() {
 
     return (
         <>
-        <mesh geometry={ArrowTail} scale={[1.25, 0.5, 1]}>
+        <mesh geometry={ArrowTail} scale={[1.0, 1.0, 1]} position={[-4.0,0.0,0.0]}>
             <meshBasicMaterial
                 vertexColors
                 side={THREE.DoubleSide}
             />
         </mesh>
         
-        <mesh geometry={ArrowHead} scale={[1.5,1, 1]} position={[0, 0, -1.75]} rotation={[-Math.PI/2, 0, 0]} >
+        <mesh geometry={ArrowHead} scale={[1.0,1, 1]} position={[-2.0, 0, 0.0]} rotation={[0, 0, -Math.PI/2]}>
             <meshBasicMaterial
                 vertexColors
                 side={THREE.DoubleSide}
