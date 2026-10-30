@@ -42,7 +42,8 @@ let volumeData = null;
 let volumeTexture = null;
 
 
-function handleVolumeFileUpload(event)
+// function handleVolumeFileUpload(event)
+function handleVolumeFileUpload(event, dim)
 {
     // code:
     const file = event.target.files[0];
@@ -57,22 +58,28 @@ function handleVolumeFileUpload(event)
     reader.onload = function(e)
     {
         const arrayBuffer = e.target.result;
+        const uint8Array = new Uint8Array(arrayBuffer);
 
-        volumeData = new Uint8Array(arrayBuffer);
+        const data = new Uint8Array(dim * dim * dim);
+        for (let i = 0; i < uint8Array.length; i++)
+        {
+            data[i] = uint8Array[i];
+        }
+
+        volumeData =data;
 
         console.log("Raw file loaded successfully.");
         console.log("File Name",file.name);
         console.log("File size",volumeData.length,"bytes");
         console.log("first voxel value[0] ",volumeData[0]);
 
-        const dim = 256;
-
         volumeTexture = new THREE.Data3DTexture(volumeData,dim,dim,dim);
+
         volumeTexture.format = THREE.RedFormat;
         volumeTexture.type= THREE.UnsignedByteType;
+
         volumeTexture.minFilter = THREE.LinearFilter;
         volumeTexture.magFilter = THREE.LinearFilter;
-
         volumeTexture.wrapS = THREE.ClampToEdgeWrapping;
         volumeTexture.wrapT = THREE.ClampToEdgeWrapping;
         volumeTexture.wrapR = THREE.ClampToEdgeWrapping;
@@ -91,7 +98,14 @@ function handleVolumeFileUpload(event)
     reader.readAsArrayBuffer(file);
 }
 
-document.getElementById("volumeFile").addEventListener("change",handleVolumeFileUpload);
+const maxDim=256;
+
+document.getElementById("volumeFile").addEventListener("change",
+    function(event)
+    {
+        handleVolumeFileUpload(event,maxDim);
+    }
+);
 
 
 const vertexShader = `
