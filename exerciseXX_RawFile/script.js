@@ -31,24 +31,20 @@ const gltfLoader_1 = new GLTFLoader();
 gltfLoader_1.load(
     //'/static/models/Duck/glTF/Duck.gltf',
     '/static/models/Duck/glTF-Embedded/Duck.gltf',
-
     (gltf) =>
     {
         console.log(gltf);
         // scene.add(gltf.scene.children[0])
-
     },
 )
 
 let volumeData = null;
-
 let volumeTexture = null;
 
 
 function handleVolumeFileUpload(event)
 {
     // code:
-
     const file = event.target.files[0];
 
     if(!file)
@@ -69,11 +65,9 @@ function handleVolumeFileUpload(event)
         console.log("File size",volumeData.length,"bytes");
         console.log("first voxel value[0] ",volumeData[0]);
 
-
         const dim = 256;
 
         volumeTexture = new THREE.Data3DTexture(volumeData,dim,dim,dim);
-
         volumeTexture.format = THREE.RedFormat;
         volumeTexture.type= THREE.UnsignedByteType;
         volumeTexture.minFilter = THREE.LinearFilter;
@@ -84,6 +78,8 @@ function handleVolumeFileUpload(event)
         volumeTexture.wrapR = THREE.ClampToEdgeWrapping;
         volumeTexture.needsUpdate= true;
 
+        material.uniforms.uVolumeTexture.value = volumeTexture;
+
         console.log("3D Texture creation done ");
     };
 
@@ -92,12 +88,110 @@ function handleVolumeFileUpload(event)
         console.error(" Failed to read the RAW file");
     }
 
-
     reader.readAsArrayBuffer(file);
 }
 
 document.getElementById("volumeFile").addEventListener("change",handleVolumeFileUpload);
 
+
+const vertexShader = `
+    out vec3 oTexCoords;
+    void main()
+    {
+        gl_Position = projectionMatrix
+                    * modelViewMatrix
+                    * vec4(position, 1.0);
+
+        oTexCoords = position + vec3(0.5);
+    }
+`;
+
+const fragmentShader = `
+
+    precision highp float;
+    precision highp sampler3D;
+
+    in vec3 oTexCoords;
+
+    uniform sampler3D uVolumeTexture;
+    uniform vec3 u_cameraPosition;
+    uniform vec3 u_stepSize;
+    
+    const int MAX_SAMPLES = 300;
+    const vec3 texMin = vec3(0.0);
+    const vec3 texMax = vec3(1.0);
+
+    layout(location = 0) out vec4 FragColor;
+
+    void main()
+    {
+        // Initialize FragColor
+        // FragColor = vec4(0.0);
+
+        // Step 1: Initial 3D texture position.
+        vec3 dataPosition = oTexCoords;
+
+        // Step 2: Calculate ray marching direction.
+        vec3 geometryDirection = normalize((oTexCoords - vec3(0.5)) - u_cameraPosition);
+
+        // Step 3: Calculate the incremental step.
+        vec3 directionStep = geometryDirection * u_stepSize;
+
+        for (int i = 0; i < MAX_SAMPLES; i++)
+        {
+            dataPosition += directionStep;
+
+            // Stop if the position is outside the volume.
+            bool bStop =dot(sign(dataPosition - texMin),sign(texMax - dataPosition)) < 3.0;
+
+            if (bStop)
+                break;
+
+            // Sample the red channel of the 3D texture.
+            float fSample = texture(uVolumeTexture, dataPosition).r;
+
+            // Front-to-back compositing.
+            float prev_alpha = fSample * (1.0 - FragColor.a);
+
+            FragColor.rgb += prev_alpha * vec3(fSample);
+            FragColor.a += prev_alpha;
+
+            //Ray Termination : if the currently composited colour alpha is already fully saturated,we terminated the loop
+            if (FragColor.a > 0.99)
+                break;
+        }
+    }
+`;
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+const material = new THREE.ShaderMaterial({
+    glslVersion: THREE.GLSL3,
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader,
+
+    uniforms: {
+        uVolumeTexture: {
+            value: null
+        },
+        u_cameraPosition: {
+            value: new THREE.Vector3()
+        },
+
+        u_stepSize: {
+            value: new THREE.Vector3(
+                1.0 / 256.0,
+                1.0 / 256.0,
+                1.0 / 256.0
+            )
+        }
+    },
+    transparent: true,
+    side: THREE.FrontSide
+});
+
+const mesh_1 = new THREE.Mesh(geometry, material);
+
+scene.add(mesh_1);
 
 
 // Create and add DEBUG Axes in our 'scene'
@@ -106,7 +200,6 @@ scene.add(axesHelper);
 
 // Create and add CUBE in our 'group_1' which is already added in 'scene'
 const floor_1 = new THREE.Mesh(
-    // new THREE.BoxGeometry(1, 1, 1),
     new THREE.PlaneGeometry(10,10),
     new THREE.MeshStandardMaterial({
         color: '#444444',
@@ -125,7 +218,7 @@ floor_1.rotation.x = -Math.PI * 0.5;
 floor_1.rotation.y = 0.0;
 floor_1.rotation.z = 0.0;
 
-scene.add(floor_1);
+// scene.add(floor_1);
 
 
 //** LIGHTS **:
@@ -209,6 +302,13 @@ const tick = ()=>
     time = currentTime;
                                     
     controls.update();
+
+    camera.updateMatrixWorld();
+    material.uniforms.u_cameraPosition.value.copy(
+        mesh_1.worldToLocal(
+            camera.getWorldPosition(new THREE.Vector3())
+        )
+    );
 
     //* display()
     renderer.render(scene, camera)
