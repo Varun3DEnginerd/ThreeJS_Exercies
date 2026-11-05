@@ -15,8 +15,6 @@ const cursor=
 
 //! CANVAS:
 const canvas = document.querySelector('canvas.threeJS')
-//console.log(canvas)
-//console.log(THREE)
 
 // Creating a new scene:
 const scene = new THREE.Scene()
@@ -79,18 +77,6 @@ const vertices = [
     new THREE.Vector3(-0.5,  0.5,  0.5)  // v7
 ];
 
-// Corresponding 3D texture coordinates
-const texCoords = [
-    new THREE.Vector3(0.0, 0.0, 0.0), // v0
-    new THREE.Vector3(1.0, 0.0, 0.0), // v1
-    new THREE.Vector3(1.0, 1.0, 0.0), // v2
-    new THREE.Vector3(0.0, 1.0, 0.0), // v3
-
-    new THREE.Vector3(0.0, 0.0, 1.0), // v4
-    new THREE.Vector3(1.0, 0.0, 1.0), // v5
-    new THREE.Vector3(1.0, 1.0, 1.0), // v6
-    new THREE.Vector3(0.0, 1.0, 1.0)  // v7
-];
 
 function handleVolumeFileUpload(event, dim)
 {
@@ -199,9 +185,7 @@ const fragmentShader = `
     layout(location = 0) out vec4 FragColor;
     void main()
     {
-        float fIntensity = texture(uVolumeTexture,oTexCoords).r;
         FragColor = texture(uVolumeTexture,oTexCoords).rrrr;
-        //FragColor = vec4(fIntensity,fIntensity,fIntensity,fIntensity);
     }
 `;
 
@@ -455,6 +439,7 @@ vao_BoundingBox.setUsage(THREE.DynamicDrawUsage);
 boundingBoxGeometry.setAttribute('position',vao_BoundingBox);
 boundingBoxGeometry.setDrawRange(0,0);
 
+
 console.log(" Geometry attributes:",boundingBoxGeometry.attributes);
 console.log(" vao_BoundingBox.itemSize :",vao_BoundingBox.itemSize);
 console.log(" vao_BoundingBox.array.length :",vao_BoundingBox.array.length);
@@ -470,27 +455,15 @@ const material = new THREE.ShaderMaterial({
         },
     },
     transparent: true,
-    blending: THREE.CustomBlending,
-    blendEquation: THREE.AddEquation,
-    blendSrc: THREE.SrcAlphaFactor,
-    blendDst:THREE.OneMinusSrcAlphaFactor,
 
     depthTest:true,
     depthWrite:false,
     side: THREE.DoubleSide
 });
 
-const testMaterial = new THREE.MeshBasicMaterial(
-    {
-        color:0xff0000,
-        side:THREE.DoubleSide,
-        wireframe:true
-    }
-);
 
 const mesh_1 = new THREE.Mesh(boundingBoxGeometry, material);
 scene.add(mesh_1);
-
 
 
 
@@ -575,7 +548,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 let time = Date.now();
 
 const cameraWorldPosition = new THREE.Vector3();
-const volumeCenter = new THREE.Vector3(0, 0, 0);
 
 const tick = ()=>
 {
@@ -586,8 +558,8 @@ const tick = ()=>
                                     
     controls.update();
 
+    
     camera.updateMatrixWorld();
-
     mesh_1.updateMatrixWorld();
 
     camera.getWorldPosition(cameraWorldPosition);
